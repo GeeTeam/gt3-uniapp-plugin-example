@@ -1,0 +1,46 @@
+{
+	"name": "Geetest-GT3CaptchaModule",
+	"id": "Geetest-GT3CaptchaModule",
+	"version": "1.0.0",
+	"description": "极验GT3CaptchaHbuilder插件",
+	"_dp_type": "nativeplugin",
+	"_dp_nativeplugin": {
+		"ios": {
+			"plugins": [{
+				"type": "module",
+				"name": "Geetest-GT3CaptchaModule",
+				"class": "GT3CaptchaModule"
+			}],
+			"integrateType": "framework",
+			"hooksClass": "",
+			"frameworks": [
+				
+			],
+			"resources": [
+				"GT3Captcha.bundle"
+			],
+			"deploymentTarget": "8.0"
+		},
+		"android": {
+			"plugins": [{
+				"type": "module",
+				"name": "Geetest-GT3CaptchaModule",
+				"class": "com.geetest.sensebot_uniplugin.GT3CaptchaUtils"
+			}],
+			"hooksClass": "",
+			"integrateType": "aar",
+			"minSdkVersion": "16",
+			"permissions": [
+				"android.permission.INTERNET",
+				"android.permission.ACCESS_WIFI_STATE",
+				"android.permission.CHANGE_NETWORK_STATE",
+				"android.permission.READ_PHONE_STATE",
+				"android.permission.WRITE_EXTERNAL_STORAGE",
+				"android.permission.READ_EXTERNAL_STORAGE",
+				"android.permission.ACCESS_NETWORK_STATE",
+				"android.permission.WRITE_SETTINGS",
+				"android.permission.GET_TASKS"
+			]
+		}
+	}
+}
