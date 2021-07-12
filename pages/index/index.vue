@@ -90,6 +90,14 @@
 			        // 设置 webview 资源加载超时		
 					gtSDKModule.setTimeout(6000);
 					console.log("=========== setTimeout: =========== ");
+					
+					// 设置 UI 圆角大小
+					gtSDKModule.setCorners(4);
+					console.log("=========== setCorners: =========== ");
+					
+					// 设置是否输出 SD 卡日志
+					gtSDKModule.setReleaseLog(true);
+					console.log("=========== setReleaseLog: =========== ");
 				
 				} else if (platform == 'ios') {
 					let sdkVersion = gtSDKModule.sdkVersion();
@@ -222,6 +230,14 @@
 			        // 设置 webview 资源加载超时		
 					gtSDKModule.setTimeout(6000);
 					console.log("=========== setTimeout: =========== ");
+					
+					// 设置 UI 圆角大小
+					gtSDKModule.setCorners(4);
+					console.log("=========== setCorners: =========== ");
+					
+					// 设置是否输出 SD 卡日志
+					gtSDKModule.setReleaseLog(true);
+					console.log("=========== setReleaseLog: =========== ");
 					
 				} else if (platform == 'ios') {
 					let sdkVersion = gtSDKModule.sdkVersion();
