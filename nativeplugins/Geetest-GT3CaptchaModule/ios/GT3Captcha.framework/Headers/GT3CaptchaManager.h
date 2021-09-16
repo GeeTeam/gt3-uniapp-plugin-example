@@ -11,6 +11,8 @@
 #import "GT3Utils.h"
 #import "GT3Error.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol GT3CaptchaManagerDelegate, GT3CaptchaNetworkDelegate, GT3CaptchaManagerViewDelegate, GT3CaptchaManagerStatisticDelegate;
 
 @interface GT3CaptchaManager : NSObject
@@ -19,31 +21,40 @@
 + (NSString *)sdkVersion;
 
 /** 验证管理代理 */
-@property (nonatomic, weak) id<GT3CaptchaManagerDelegate> delegate;
+@property (nullable, nonatomic, weak) id<GT3CaptchaManagerDelegate> delegate;
 /** 验证网络代理 */
-@property (nonatomic, weak) id<GT3CaptchaNetworkDelegate> networkDelegate;
+@property (nullable, nonatomic, weak) id<GT3CaptchaNetworkDelegate> networkDelegate;
 /** 验证视图代理 */
-@property (nonatomic, weak) id<GT3CaptchaManagerViewDelegate> viewDelegate;
+@property (nullable, nonatomic, weak) id<GT3CaptchaManagerViewDelegate> viewDelegate;
 /** 验证统计代理 */
-@property (nonatomic, weak) id<GT3CaptchaManagerStatisticDelegate> statisticDelegate;
+@property (nullable, nonatomic, weak) id<GT3CaptchaManagerStatisticDelegate> statisticDelegate;
 
 /** 验证状态 */
 @property (nonatomic, readonly) GT3CaptchaState captchaState;
 /** 图形验证的展示状态 */
 @property (nonatomic, readonly) BOOL isShowing;
 /** 获取启动验证参数的接口 */
-@property (nonatomic, readonly) NSURL *API_1;
+@property (nullable, nonatomic, readonly) NSURL *API_1;
 /** 进行二次验证的接口 */
-@property (nonatomic, readonly) NSURL *API_2;
+@property (nullable, nonatomic, readonly) NSURL *API_2;
 /** 验证的ID */
-@property (nonatomic, readonly, strong) NSString *gt_captcha_id;
+@property (nullable, nonatomic, readonly, strong) NSString *gt_captcha_id;
 /** 验证的会话标识 */
-@property (nonatomic, readonly, strong) NSString *gt_challenge;
+@property (nullable, nonatomic, readonly, strong) NSString *gt_challenge;
 /** 验证的服务状态, 1正常/0宕机 */
-@property (nonatomic, readonly, strong) NSNumber *gt_success_code;
+@property (nullable, nonatomic, readonly, strong) NSNumber *gt_success_code;
 
 /** 背景验证 */
-@property (nonatomic, strong) UIColor *maskColor;
+@property (nullable, nonatomic, strong) UIColor *maskColor;
+
+/**
+ 自定义 api2 验证结果显示时机，默认为 NO
+ NO     - 验证弹窗显示后，在弹窗上操作验证成功后，不管 api2 具体的验证结果如何，立即显示验证成功
+ YES    - 验证弹窗显示后，在弹窗上操作验证成功后，不显示验证结果，待 api2 验证完成之后，由调用者根据 api2 结果自行显示验证结果，若 api2 验证成功，请调用 `showGTCaptchaSuccessView` 方法显示成功，若 api2 验证失败，请调用 `destroyGTView` 方法直接关闭验证弹窗
+ */
+@property (nonatomic, assign) BOOL customAPI2ResultShowOccasion;
+
+@property (nonatomic, assign) BOOL disableKeyboard;
 
 #pragma mark 基本方法
 
@@ -60,8 +71,8 @@
  *  @return GT3CaptchaManager 实例
  *
  */
-- (instancetype)initWithAPI1:(NSString *)api_1
-                        API2:(NSString *)api_2
+- (instancetype)initWithAPI1:(nullable NSString *)api_1
+                        API2:(nullable NSString *)api_2
                      timeout:(NSTimeInterval)timeout NS_DESIGNATED_INITIALIZER;
 
 /**
@@ -89,7 +100,7 @@
 - (void)configureGTest:(NSString *)gt_id
              challenge:(NSString *)gt_challenge
                success:(NSNumber *)gt_success_code
-              withAPI2:(NSString *)api_2 API_DEPRECATED_WITH_REPLACEMENT("registerCaptchaWithCustomAsyncTask:completion:", ios(2.0, 6.0));
+              withAPI2:(NSString *)api_2 DEPRECATED_MSG_ATTRIBUTE("registerCaptchaWithCustomAsyncTask:completion:");
 
 /**
  *
@@ -97,7 +108,7 @@
  *
  *  @param completionHandler 注册成功后的回调
  */
-- (void)registerCaptcha:(GT3CaptchaDefaultBlock)completionHandler;
+- (void)registerCaptcha:(nullable GT3CaptchaDefaultBlock)completionHandler;
 
 /**
  *
@@ -113,7 +124,7 @@
  *  @seealso GT3AsyncTaskProtocol
  *
  */
-- (void)registerCaptchaWithCustomAsyncTask:(id<GT3AsyncTaskProtocol>)customAsyncTask completion:(GT3CaptchaDefaultBlock)completionHandler;
+- (void)registerCaptchaWithCustomAsyncTask:(id<GT3AsyncTaskProtocol>)customAsyncTask completion:(nullable GT3CaptchaDefaultBlock)completionHandler;
 
 /**
  *  ❗️<b>必要方法</b>❗️
@@ -154,7 +165,7 @@
  *  @param cookieName cookie的键名
  *  @return 对应的cookie的值
  */
-- (NSString *)getCookieValue:(NSString *)cookieName;
+- (nullable NSString *)getCookieValue:(NSString *)cookieName;
 
 #pragma mark 其他配置的方法
 
@@ -171,6 +182,33 @@
 *  @param cornerRadius 圆角大小, 大小不超过 30 px
 */
 - (void)useGTViewWithCornerRadius:(CGFloat)cornerRadius;
+
+/**
+ @abstract 设置图形验证视图的 CALayer
+ 
+ @param layerConfigs 参数配置，请正确设置参数，SDK 会通过 KVC 的形式设置 GTView 的 Layer
+ 
+ @discussion 参数举例
+ NSMutableDictionary *layerConfigs = [NSMutableDictionary dictionary];
+ // 设置投影
+ [layerConfigs setValue:[NSValue valueWithCGSize:CGSizeMake(20, 30)] forKey:@"shadowOffset"];
+ [layerConfigs setValue:(id)[UIColor colorWithRed:1 green:0 blue:0 alpha:1].CGColor forKey:@"shadowColor"];
+ [layerConfigs setValue:@1.0 forKey:@"shadowOpacity"];
+ [layerConfigs setValue:@10.0 forKey:@"shadowRadius"];
+ // 要有投影效果，一定要将 masksToBounds 设置为 NO
+ [layerConfigs setValue:@NO forKey:@"masksToBounds"];
+ // 验证框默认有宽度为 0.5 的灰色边框，若不需要边框，可将其宽度设置为 0
+ [layerConfigs setValue:@0 forKey:@"borderWidth"];
+ [_manager useGTViewWithLayerConfigs:layerConfigs];
+ */
+- (void)useGTViewWithLayerConfigs:(NSDictionary *)layerConfigs;
+
+/**
+ @abstract 设置图形验证的 clipsToBounds 属性，SDK 默认设置为 YES
+ 
+ @param clipsToBounds 是否裁剪图形验证视图
+ */
+- (void)useGTViewWithClipsToBounds:(NSNumber *)clipsToBounds;
 
 /**
  *  @abstract 验证静态参数
@@ -297,6 +335,21 @@
  */
 + (BOOL)isLogEnabled;
 
+/**
+ * @abstract 销毁验证弹窗视图
+ */
+- (void)destroyGTView;
+
+/**
+ * @abstract 隐藏验证弹窗视图
+ */
+- (void)hideGTView;
+
+/**
+ * @abstract 显示验证成功视图
+ */
+- (void)showGTCaptchaSuccessView;
+
 @end
 
 #pragma mark - 验证代理方法
@@ -326,7 +379,7 @@
  *  @param error            错误源
  *  @param decisionHandler  更新验证结果的视图
  */
-- (void)gtCaptcha:(GT3CaptchaManager *)manager didReceiveSecondaryCaptchaData:(NSData *)data response:(NSURLResponse *)response error:(GT3Error *)error decisionHandler:(void (^)(GT3SecondaryCaptchaPolicy captchaPolicy))decisionHandler;
+- (void)gtCaptcha:(GT3CaptchaManager *)manager didReceiveSecondaryCaptchaData:(nullable NSData *)data response:(nullable NSURLResponse *)response error:(nullable GT3Error *)error decisionHandler:(void (^)(GT3SecondaryCaptchaPolicy captchaPolicy))decisionHandler;
 
 @optional
 
@@ -374,7 +427,7 @@
  }
  </pre>
  */
-- (NSDictionary *)gtCaptcha:(GT3CaptchaManager *)manager didReceiveDataFromAPI1:(NSDictionary *)dictionary withError:(GT3Error *)error;
+- (nullable NSDictionary *)gtCaptcha:(GT3CaptchaManager *)manager didReceiveDataFromAPI1:(nullable NSDictionary *)dictionary withError:(nullable GT3Error *)error;
 
 /**
  *  @abstract 通知接收到返回的验证交互结果
@@ -386,7 +439,7 @@
  *  @param result  二次验证数据
  *  @param message 附带消息
  */
-- (void)gtCaptcha:(GT3CaptchaManager *)manager didReceiveCaptchaCode:(NSString *)code result:(NSDictionary *)result message:(NSString *)message;
+- (void)gtCaptcha:(GT3CaptchaManager *)manager didReceiveCaptchaCode:(NSString *)code result:(nullable NSDictionary *)result message:(nullable NSString *)message;
 
 /**
  *  @abstract 是否使用内部默认的API2请求逻辑
@@ -455,7 +508,7 @@
  *  @param state   验证状态
  *  @param error   错误信息
  */
-- (void)gtCaptcha:(GT3CaptchaManager *)manager updateCaptchaStatus:(GT3CaptchaState)state error:(GT3Error *)error;
+- (void)gtCaptcha:(GT3CaptchaManager *)manager updateCaptchaStatus:(GT3CaptchaState)state error:(nullable GT3Error *)error;
 
 /**
  *  @abstract 更新验证视图
@@ -480,3 +533,5 @@
 - (void)gtCaptcha:(GT3CaptchaManager *)manager didReturnStatisticInfomation:(NSData *)data;
 
 @end
+
+NS_ASSUME_NONNULL_END

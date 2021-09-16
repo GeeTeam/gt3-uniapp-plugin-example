@@ -29,8 +29,12 @@ typedef NS_ENUM(NSUInteger, GT3ErrorType) {
     /** 内部解码错误类型 */
     GT3ErrorTypeDecode,
     /** 外部错误类型 */
-    GT3ErrorTypeExtern
+    GT3ErrorTypeExtern,
+    /** 特殊错误类型 */
+    GT3ErrorTypeSpecial
 };
+
+extern NSString * const GT3ErrorDomainSpecial;
 
 /**
  *  极验封装的NSError
@@ -57,6 +61,8 @@ typedef NS_ENUM(NSUInteger, GT3ErrorType) {
  *  @seealso NSError
  */
 + (instancetype)errorWithDomainType:(GT3ErrorType)type originalError:(NSError *)originalError withGTDesciption:(NSString *)description;
+
+- (NSString *)errorDescription;
 
 @end
 

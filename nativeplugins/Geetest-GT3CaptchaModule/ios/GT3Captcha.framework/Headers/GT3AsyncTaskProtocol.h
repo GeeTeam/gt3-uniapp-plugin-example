@@ -14,8 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol GT3AsyncTaskProtocol <NSObject>
 
 /** 用于自定义验证注册的任务
- * @param completion    返回验证注册参数，以用于启动验证。`params`为用于注册
- *                      的数据。`error` 为获取验证注册参数失败的错误描述对象。
+ * @param completion    返回验证注册参数，以用于启动验证。`params` 和
+ *                      `error` 中至少回传给管理器一个。其中 `params` 为用于注册
+ *                      的数据，`error` 为获取验证注册参数失败的错误描述对象。
  *                      `GT3Error`的构造可以使用`+[GT3Error errorWithDomainType:GT3ErrorTypeExtern originalError:originalError withGTDesciption:nil]`完成。
  */
 - (void)executeRegisterTaskWithCompletion:(void(^)(GT3RegisterParameter * _Nullable params, GT3Error * _Nullable error))completion;

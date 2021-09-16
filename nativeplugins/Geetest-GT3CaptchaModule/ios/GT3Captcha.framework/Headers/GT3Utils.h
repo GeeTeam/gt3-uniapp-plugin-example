@@ -52,8 +52,12 @@ typedef NS_ENUM(NSInteger, GT3CaptchaState) {
 typedef NS_ENUM(NSInteger, GT3CaptchaServiceNode) {
     /** 中国服务集群*/
     GT3CaptchaServiceNodeCN = 0,
-    /** 北美服务集群*/
+    /** 中国服务集群（支持 IPv6）*/
+    GT3CaptchaServiceNodeCN_IPv6,
+    /** 北美亚马逊云服务集群*/
     GT3CaptchaServiceNodeNA,
+    /** 北美谷歌云服务集群*/
+    GT3CaptchaServiceNodeNG,
     /** 默认服务集群*/
     GT3CaptchaServiceNodeDefault = GT3CaptchaServiceNodeCN
 };
