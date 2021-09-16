@@ -26,13 +26,15 @@
 	
 	export default {
 		onLoad() {
-
+			
 		},
 		mounted() {
 			Vue.prototype.$customAPI1Response = this.customAPI1Response;
 			Vue.prototype.$startRegisterTask = this.startRegisterTask;
 			Vue.prototype.$startValidateTask = this.startValidateTask;
 			Vue.prototype.$showAsyncTaskValidateResult = this.showAsyncTaskValidateResult;
+			
+			console.log("=========== uni: =========== " + uni);
 		},
 		methods: {
 			initGT3Captcha() {				
@@ -180,6 +182,7 @@
 					console.log("=========== load plugin failed =========== ");
 					return;
 				}
+				
 				console.log("=========== load plugin success ======= ");
 				
 				let platform = uni.getSystemInfoSync().platform;		
@@ -336,6 +339,7 @@
 					});
 					
 				} else if (platform == 'ios') {
+					console.log("=========== did touch start ======= ");
 					// 是否使用默认的 api2 请求
 					gtSDKModule.setShouldUseDefaultSecondaryValidate(true);
 					
@@ -508,6 +512,7 @@
 				}
 			}, 
 			startRegisterTask() {
+				console.log("=========== start async register task ======= ");
 				// 通过 api1 请求拉取 gt、challenge、success 参数
 				let timestamp = new Date().getTime();
 				let url = "http://www.geetest.com/demo/gt/register-test?t=" + timestamp;
