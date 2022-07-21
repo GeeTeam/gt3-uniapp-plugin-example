@@ -23,19 +23,42 @@
 
 <script>
 	var gtSDKModule = uni.requireNativePlugin("Geetest-GT3CaptchaModule"); 
+	var globalEvent = uni.requireNativePlugin('globalEvent');
 	
 	export default {
 		onLoad() {
-			
+			const that =this;
+			globalEvent.addEventListener('customAPI1Response',function(e) {
+				let jsonString = JSON.stringify(e);
+				let obj = JSON.parse(jsonString); 
+				let result = obj['GT3Key'];
+				console.log("=========== customAPI1Response: " + result);
+				that.customAPI1Response(result);
+			});
+			globalEvent.addEventListener('startRegisterTask',function(e) {
+				console.log("=========== listener startRegisterTask: " + e);
+				let jsonString = JSON.stringify(e);
+				let obj = JSON.parse(jsonString); 
+				let result = obj['GT3Key'];
+				console.log("=========== startRegisterTask: " + result);
+				that.startRegisterTask();
+			});
+			globalEvent.addEventListener('startValidateTask',function(e) {
+				let jsonString = JSON.stringify(e);
+				let obj = JSON.parse(jsonString); 
+				let result = obj['GT3Key'];
+				console.log("=========== startValidateTask: " + result);
+				that.startValidateTask(result);
+			});
+			globalEvent.addEventListener('showAsyncTaskValidateResult',function(e) {
+				let jsonString = JSON.stringify(e);
+				let obj = JSON.parse(jsonString); 
+				let result = obj['GT3Key'];
+				console.log("=========== showAsyncTaskValidateResult: " + result);
+				that.showAsyncTaskValidateResult(result);
+			});
 		},
-		mounted() {
-			Vue.prototype.$customAPI1Response = this.customAPI1Response;
-			Vue.prototype.$startRegisterTask = this.startRegisterTask;
-			Vue.prototype.$startValidateTask = this.startValidateTask;
-			Vue.prototype.$showAsyncTaskValidateResult = this.showAsyncTaskValidateResult;
-			
-			console.log("=========== uni: =========== " + uni);
-		},
+		mounted() {},
 		methods: {
 			initGT3Captcha() {				
 				if (gtSDKModule == undefined) {
@@ -182,6 +205,7 @@
 					console.log("=========== load plugin failed =========== ");
 					return;
 				}
+				
 				
 				console.log("=========== load plugin success ======= ");
 				
@@ -568,8 +592,9 @@
 						postData = postData.substring(0, postData.length - 1);
 					}
 					console.log("=========== postData: " + postData + " =======");
+					console.log("打标记");
 					uni.request({
-						url: "http://www.geetest.com/demo/gt/validate-test",
+						url: "https://www.geetest.com/demo/gt/validate-test",
 						data: postData,
 						header: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
 						method: "POST",

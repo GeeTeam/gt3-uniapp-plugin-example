@@ -11,17 +11,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * 使用 AsyncTask 方式集成，gtCaptcha:didReceiveSecondaryCaptchaData:response:error:decisionHandler: 不再被调用
+ * 需要实现的原因是协议中标注了 @required
+ * 同时 executeValidationTaskWithValidateParam:completion: 回调就是验证流程结束
+ */
 @protocol GT3AsyncTaskProtocol <NSObject>
 
 /** 用于自定义验证注册的任务
- * @param completion    返回验证注册参数，以用于启动验证。`params` 和
- *                      `error` 中至少回传给管理器一个。其中 `params` 为用于注册
- *                      的数据，`error` 为获取验证注册参数失败的错误描述对象。
+ * @discussion          为了让管理器接收并进行下一步的处理，则无论失败与否 completion 必须调用
+ * @param completion    返回验证注册参数，以用于启动验证。`params`为用于注册
+ *                      的数据。`error` 为获取验证注册参数失败的错误描述对象。
  *                      `GT3Error`的构造可以使用`+[GT3Error errorWithDomainType:GT3ErrorTypeExtern originalError:originalError withGTDesciption:nil]`完成。
  */
 - (void)executeRegisterTaskWithCompletion:(void(^)(GT3RegisterParameter * _Nullable params, GT3Error * _Nullable error))completion;
 
 /** 用于自定义验证结果校验的任务
+ *  @discussion         此回调就代表一次正确验证流程的结束
  *  @param param        验证用于业务方进行校验的参数
  *  @param completion   返回验证二次校验结果给管理器，用于返回给管理器更新状态。
  *                      `validationResult` 为校验结果，赋值 YES 为成功，赋值 NO
