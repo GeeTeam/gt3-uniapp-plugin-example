@@ -1,7 +1,7 @@
 {
 	"name": "Geetest-GT3CaptchaModule",
 	"id": "Geetest-GT3CaptchaModule",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "极验GT3CaptchaHbuilder插件",
 	"_dp_type": "nativeplugin",
 	"_dp_nativeplugin": {
@@ -19,7 +19,7 @@
 			"resources": [
 				"GT3Captcha.bundle"
 			],
-			"deploymentTarget": "8.0"
+			"deploymentTarget": "9.0"
 		},
 		"android": {
 			"plugins": [{
@@ -29,7 +29,7 @@
 			}],
 			"hooksClass": "",
 			"integrateType": "aar",
-			"minSdkVersion": "16",
+			"minSdkVersion": "19",
 			"permissions": [
 				"android.permission.INTERNET",
 				"android.permission.ACCESS_WIFI_STATE",
